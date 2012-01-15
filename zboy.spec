@@ -8,6 +8,7 @@ License:	GPLv3
 Group:		Emulators
 URL:		http://www.viste-family.net/mateusz/software/zboy/
 Source0:	http://www.viste-family.net/mateusz/software/%{name}/%{name}0%{oversion}-src.zip
+Patch0:		zboy-0.51-pthread.patch
 BuildRequires:	SDL-devel
 
 %description
@@ -32,6 +33,7 @@ WARNING! There is no GUI yet. Run the emulator from terminal: zboy your_rom.gb
 
 %prep
 %setup -q -n %{name}_source
+%patch0 -p1
 
 %build
 %ifarch x86_64
