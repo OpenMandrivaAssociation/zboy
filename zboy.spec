@@ -1,15 +1,30 @@
-%define		oversion 51
+%if %{mdvver} >= 201100
+%define		build_gui	1
+%else
+%define		build_gui	0
+%endif
 
-Summary:	Nintendo GameBoy Emulator
 Name:		zboy
-Version:	0.%{oversion}
+Version:	0.52
 Release:	%mkrel 1
+Summary:	Nintendo GameBoy Emulator
 License:	GPLv3
 Group:		Emulators
 URL:		http://www.viste-family.net/mateusz/software/zboy/
-Source0:	http://www.viste-family.net/mateusz/software/%{name}/%{name}0%{oversion}-src.zip
-Patch0:		zboy-0.51-pthread.patch
+Source0:	http://www.viste-family.net/mateusz/software/%{name}/%{name}_v%{version}_src.zip
+Source1:	%{name}-16.png
+Source2:	%{name}-32.png
+Source3:	%{name}-48.png
+Source4:	%{name}-64.png
+Source5:	%{name}-96.png
+Source6:	%{name}-128.png
+Patch0:		zboy-0.52-makefile.patch
+Patch1:		zboy-0.52-sfmt.patch
 BuildRequires:	SDL-devel
+%if %{build_gui}
+BuildRequires:	pkgconfig(gtk+-3.0)
+BuildRequires:	pkgconfig(glib-2.0)
+%endif
 
 %description
 zBoy is a multiplatform GameBoy emulator that provides a load/save feature,
@@ -29,17 +44,26 @@ games in 2-players mode on a LAN.
 
 zBoy allows to play GameBoy games using a keyboard or a joypad (or both).
 
-WARNING! There is no GUI yet. Run the emulator from terminal: zboy your_rom.gb
+%if %{build_gui}
+Since 0.52 zBoy features GTK3 GUI.
+%else
+WARNING! There is no GUI for zBoy in this Mandriva version because it
+doesn't have GTK3 development libraries.
+Run the emulator from terminal: zboy your_rom.gb
+%endif
 
 %prep
-%setup -q -n %{name}_source
+%setup -q -c
 %patch0 -p1
+%patch1 -p1
+%__cp Makefile.linux Makefile
 
 %build
-%ifarch x86_64
-%make linux64
+%setup_compile_flags
+%if %{build_gui}
+%make zboy-gui
 %else
-%make linux
+%make zboy-nogui
 %endif
 
 %install
@@ -47,10 +71,36 @@ WARNING! There is no GUI yet. Run the emulator from terminal: zboy your_rom.gb
 %__mkdir_p %{buildroot}%{_bindir}
 %__cp %{name} %{buildroot}%{_bindir}/%{name}
 
+%if %{build_gui}
+# icons
+%__install -D %{SOURCE1} -m 644 %{buildroot}%{_iconsdir}/hicolor/16x16/apps/%{name}.png
+%__install -D %{SOURCE2} -m 644 %{buildroot}%{_iconsdir}/hicolor/32x32/apps/%{name}.png
+%__install -D %{SOURCE3} -m 644 %{buildroot}%{_iconsdir}/hicolor/48x48/apps/%{name}.png
+%__install -D %{SOURCE4} -m 644 %{buildroot}%{_iconsdir}/hicolor/64x64/apps/%{name}.png
+%__install -D %{SOURCE5} -m 644 %{buildroot}%{_iconsdir}/hicolor/96x96/apps/%{name}.png
+%__install -D %{SOURCE6} -m 644 %{buildroot}%{_iconsdir}/hicolor/128x128/apps/%{name}.png
+
+# menu-entry
+%__mkdir_p  %{buildroot}%{_datadir}/applications
+%__cat > %{buildroot}%{_datadir}/applications/%{name}.desktop << EOF
+[Desktop Entry]
+Version=1.0
+Name=zBoy
+Comment=Nintendo GameBoy Emulator
+Type=Application
+Exec=%{name}
+Icon=%{name}
+Categories=Game;Emulator;
+EOF
+%endif
+
 %clean
 %__rm -rf %{buildroot}
 
 %files
-%defattr(-,root,root)
 %doc zboy.txt history.txt todo.txt license.txt
 %{_bindir}/%{name}
+%if %{build_gui}
+%{_datadir}/applications/%{name}.desktop
+%{_iconsdir}/hicolor/*/apps/%{name}.png
+%endif
