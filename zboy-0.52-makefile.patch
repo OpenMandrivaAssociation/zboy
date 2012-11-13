@@ -1,0 +1,26 @@
+diff -urN zboy-0.52/Makefile.linux zboy-0.52-patched/Makefile.linux
+--- zboy-0.52/Makefile.linux	2012-04-23 00:18:18.000000000 +1100
++++ zboy-0.52-patched/Makefile.linux	2012-04-23 18:45:21.722473962 +1100
+@@ -1,10 +1,9 @@
+-CFLAGS = -s -std=gnu89 -O3 -Wall -pedantic -Wfatal-errors -D__zboy4linux__
+-
++CFLAGS += -D__zboy4linux__
+ 
+ zboy-gui: about.o loadpal.o loadrom.o zboygui.o getsavedir.o config.o crc32.o wordwrap.o zboy_gui.o
+-	gcc zboy_gui.o loadpal.o loadrom.o getsavedir.o config.o crc32.o wordwrap.o zboygui.o -o zboy $(CFLAGS) -lgtk-3 -lSDL -lgobject-2.0 -lglib-2.0 -lpthread -DZBOY_GTK_GUI
++	gcc zboy_gui.o loadpal.o loadrom.o getsavedir.o config.o crc32.o wordwrap.o zboygui.o -o zboy $(CFLAGS) $(LDFLAGS) -lgtk-3 -lSDL -lgobject-2.0 -lglib-2.0 -lpthread -DZBOY_GTK_GUI
+ zboy-nogui: about.o loadpal.o loadrom.o getsavedir.o config.o crc32.o wordwrap.o zboy_nogui.o
+-	gcc zboy_nogui.o loadpal.o loadrom.o getsavedir.o config.o crc32.o wordwrap.o -o zboy $(CFLAGS) -lSDL -lpthread
++	gcc zboy_nogui.o loadpal.o loadrom.o getsavedir.o config.o crc32.o wordwrap.o -o zboy $(CFLAGS) $(LDFLAGS) -lSDL -lpthread
+ gprof:
+ 	gcc zboy.c -o zboy -lSDL -std=gnu89 -O4 -Wall -pedantic -march=i686 -m32 -g -pg -D__zboy4linux__
+ debugcpu:
+@@ -23,7 +22,7 @@
+ loadrom.o: loadrom.c loadrominfos.c crc32.c
+ 	gcc -c loadrom.c -o loadrom.o $(CFLAGS)
+ zboygui.o: zboygui.c
+-	gcc -c zboygui.c -o zboygui.o $(CFLAGS) -I/usr/include/gtk-3.0 -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/pango-1.0 -I/usr/lib64/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -DZBOY_GTK_GUI
++	gcc -c zboygui.c -o zboygui.o $(CFLAGS) `pkg-config --cflags glib-2.0` -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -DZBOY_GTK_GUI
+ zboy_gui.o: adjtiming.c battery.c bootrom.c cpu-divider.c cpu-microcode.c cpu-timer.c cpu-z80.c debug.c font.c getsnapshotfilename.c hiscores.c joypad.c mbc0.c mbc1.c mbc2.c mbc3.c mbc5.c mingw_inet_aton.c mmu.c numconv.c portable.c presskey.c printmsg.c qsort.c reset.c save.c savepcxfile.c serial-new.c ssaver.c video.c video_out.c zboy.c
+ 	gcc -c zboy.c -o zboy_gui.o $(CFLAGS) -DZBOY_GTK_GUI
+ zboy_nogui.o: adjtiming.c battery.c bootrom.c cpu-divider.c cpu-microcode.c cpu-timer.c cpu-z80.c debug.c font.c getsnapshotfilename.c hiscores.c joypad.c mbc0.c mbc1.c mbc2.c mbc3.c mbc5.c mingw_inet_aton.c mmu.c numconv.c portable.c presskey.c printmsg.c qsort.c reset.c save.c savepcxfile.c serial-new.c ssaver.c video.c video_out.c zboy.c

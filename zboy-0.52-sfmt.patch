@@ -1,0 +1,76 @@
+diff -urN zboy-0.52-orig/loadrominfos.c zboy-0.52-patched/loadrominfos.c
+--- zboy-0.52-orig/loadrominfos.c	2012-04-23 18:47:50.059592716 +1100
++++ zboy-0.52-patched/loadrominfos.c	2012-04-23 18:51:10.708850809 +1100
+@@ -19,7 +19,7 @@
+   while ((TempString[x] > 31) && (TempString[x] < 128) && (x < 16)) x++;
+   TempString[x] = 0;   /* Trim all zeroed bytes at the end, as well as high bytes (occuring on new-style licenses) */
+   /*TempString = TRIM(TempString) */       /* Trim any spaces on both ends of the string */
+-  sprintf(RomInfos->Title, TempString);
++  sprintf(RomInfos->Title, "%s", TempString);
+ 
+   /* Now let's see if we can fix the title in any possible way... */
+ 
+diff -urN zboy-0.52-orig/mmu.c zboy-0.52-patched/mmu.c
+--- zboy-0.52-orig/mmu.c	2012-04-23 18:47:50.059592716 +1100
++++ zboy-0.52-patched/mmu.c	2012-04-23 18:54:13.937402582 +1100
+@@ -127,7 +127,7 @@
+         }
+       } else {
+         sprintf(UserMessage, "MMU FATAL ERROR!\nTRIED TO RUN LCD OAM DMA TRANSFER USING AN INVALID RANGE!");
+-        printf(UserMessage);
++        printf("%s", UserMessage);
+         PrintMsg(UserMessage, 0);
+         PressAnyKey();
+         exit(0);
+diff -urN zboy-0.52-orig/printmsg.c zboy-0.52-patched/printmsg.c
+--- zboy-0.52-orig/printmsg.c	2012-04-23 18:47:50.075601091 +1100
++++ zboy-0.52-patched/printmsg.c	2012-04-23 18:55:31.993404764 +1100
+@@ -3,7 +3,7 @@
+ */
+ 
+ void SetUserMsg(char *msg) {
+-  sprintf(UserMessage, msg);
++  sprintf(UserMessage, "%s", msg);
+   UserMessageFramesLeft = 120; /* Make the message to be active for 120 frames (2s) */
+ }
+ 
+@@ -15,7 +15,7 @@
+   signed int pixrow, pixcol, linenum = 0;
+   int x, textstring_len;
+   char textstring[1024], txtmessage[1024];
+-  snprintf(txtmessage, 1023, txtorgmessage);
++  snprintf(txtmessage, 1023, "%s", txtorgmessage);
+   if (TransparentFlag == 0) {
+     for (pixcol = 0; pixcol < 160; pixcol++) {
+       for (pixrow = 0; pixrow < 144; pixrow++) ScreenBuffer[pixcol][pixrow] = 254;
+diff -urN zboy-0.52-orig/zboy.c zboy-0.52-patched/zboy.c
+--- zboy-0.52-orig/zboy.c	2012-04-23 18:47:50.069597968 +1100
++++ zboy-0.52-patched/zboy.c	2012-04-23 18:53:25.136021569 +1100
+@@ -336,7 +336,7 @@
+     } else {  /* anything else is assumed to be a filename */
+         if (argv[x][0] != 0) { /* ignore if the parameter is empty */
+           if (RomInfos.Filename[0] == 0) {
+-              snprintf(RomInfos.Filename, 1022, argv[x]);
++              snprintf(RomInfos.Filename, 1022, "%s", argv[x]);
+             } else {
+               RomInfos.Filename[0] = 0;   /* Clear out filename, to make sure to display usage screen later */
+               x = 250;  /* make sure to quit parsing now */
+diff -urN zboy-0.52-orig/zboygui.c zboy-0.52-patched/zboygui.c
+--- zboy-0.52-orig/zboygui.c	2012-04-23 18:47:50.059592716 +1100
++++ zboy-0.52-patched/zboygui.c	2012-04-23 18:52:40.908919750 +1100
+@@ -75,13 +75,13 @@
+   if (gtk_dialog_run(GTK_DIALOG(fileopendialog)) == GTK_RESPONSE_ACCEPT) {
+     result = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(fileopendialog));
+     if (result != NULL) {
+-      snprintf(filename, 1024, result);
++      snprintf(filename, 1024, "%s", result);
+     }
+   }
+   gtk_widget_destroy(fileopendialog);
+   if (filename[0] != 0) {
+     zboygtkinfos->newromtoload = 1;
+-    sprintf(zboygtkinfos->rominfo->Filename, filename);
++    sprintf(zboygtkinfos->rominfo->Filename, "%s", filename);
+     gtk_main_quit();
+   }
+ }
