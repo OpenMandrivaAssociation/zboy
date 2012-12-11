@@ -104,3 +104,14 @@ EOF
 %{_datadir}/applications/%{name}.desktop
 %{_iconsdir}/hicolor/*/apps/%{name}.png
 %endif
+
+
+%changelog
+* Mon Apr 23 2012 Andrey Bondrov <abondrov@mandriva.org> 0.52-1mdv2011.0
++ Revision: 792756
+- New version 0.52, now with GTK3 GUI (in MDV 2011+)
+
+* Sun Jan 15 2012 Andrey Bondrov <abondrov@mandriva.org> 0.51-1
++ Revision: 761186
+- imported package zboy
+
