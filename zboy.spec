@@ -6,7 +6,7 @@
 
 Name:		zboy
 Version:	0.52
-Release:	%mkrel 1
+Release:	2
 Summary:	Nintendo GameBoy Emulator
 License:	GPLv3
 Group:		Emulators
