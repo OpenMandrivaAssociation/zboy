@@ -10,7 +10,7 @@ Release:	2
 Summary:	Nintendo GameBoy Emulator
 License:	GPLv3
 Group:		Emulators
-URL:		http://www.viste-family.net/mateusz/software/zboy/
+URL:		https://www.viste-family.net/mateusz/software/zboy/
 Source0:	http://www.viste-family.net/mateusz/software/%{name}/%{name}_v%{version}_src.zip
 Source1:	%{name}-16.png
 Source2:	%{name}-32.png
